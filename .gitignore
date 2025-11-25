@@ -25,4 +25,5 @@ tests/
 hostfile*.txt
 .deepspeed_env
 .vscode
+RDT2_models/*
 

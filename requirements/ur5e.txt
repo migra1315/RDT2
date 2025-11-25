@@ -6,6 +6,6 @@ minimalmodbus
 zerorpc
 openvr
 # if you're using NVIDIA RTX 5090, re-install torch, then re-install flash-attn
-torch==2.8.0
-torchvision==0.22.0
-git+https://github.com/vllm-project/vllm.git@2ef0dc53b
+# torch==2.8.0
+# torchvision==0.22.0
+# git+https://github.com/vllm-project/vllm.git@2ef0dc53b
