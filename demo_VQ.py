@@ -9,14 +9,14 @@ from utils import batch_predict_action
 device = "cuda:0"
 
 
-processor = AutoProcessor.from_pretrained("RDT2_models/Qwen2.5-VL-7B-Instruct")
+processor = AutoProcessor.from_pretrained("robotics-diffusion-transformer/Qwen2.5-VL-7B-Instruct")
 model = Qwen2_5_VLForConditionalGeneration.from_pretrained(
-    "RDT2_models/RDT2-VQ",
+    "robotics-diffusion-transformer/RDT2-VQ",
     torch_dtype=torch.bfloat16,
     attn_implementation="flash_attention_2",
     device_map=device
 ).eval()
-vae = MultiVQVAE.from_pretrained("RDT2_models/RVQActionTokenizer").eval()
+vae = MultiVQVAE.from_pretrained("robotics-diffusion-transformer/RVQActionTokenizer").eval()
 vae = vae.to(device=device, dtype=torch.float32)
 
 valid_action_id_length = (
@@ -24,7 +24,7 @@ valid_action_id_length = (
 )
 # TODO: modify to your own downloaded normalizer path
 # download from http://ml.cs.tsinghua.edu.cn/~lingxuan/rdt2/umi_normalizer_wo_downsample_indentity_rot.pt
-normalizer = LinearNormalizer.load("RDT2_models/umi_normalizer_wo_downsample_indentity_rot.pt")  # 
+normalizer = LinearNormalizer.load("robotics-diffusion-transformer/umi_normalizer_wo_downsample_indentity_rot.pt")  # 
 
 # 384×384 RGB, uint8
 H, W = 384, 384

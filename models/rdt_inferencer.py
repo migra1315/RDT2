@@ -120,7 +120,7 @@ class RDTInferencer:
             device_map=self.device,
         )
         processor = AutoProcessor.from_pretrained(
-            "Qwen/Qwen2.5-VL-7B-Instruct", padding_side="left", use_fast=True)
+            "robotics-diffusion-transformer/Qwen2.5-VL-7B-Instruct", padding_side="left", use_fast=True)
         return processor, vision_language_model
 
     # def get_vision_encoder(self, pretrained_vision_encoder_name_or_path):
