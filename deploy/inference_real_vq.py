@@ -73,11 +73,11 @@ def solve_sphere_collision(ee_poses, robots_config):
 
 # TODO: add support for the third camera from reals
 @click.command()
-@click.option('--input', '-i', required=True, help='Path to checkpoint')
+@click.option('--input', '-i', required=True, default='robotics-diffusion-transformer/RDT2-VQ',help='Path to checkpoint')
 @click.option('--output', '-o', required=True, help='Directory to save recording')
-@click.option('--vae_path', '-v', required=True, help='Path to VAE checkpoint')
-@click.option('--data_config', '-dc', required=True, help='Path to data_config yaml file')
-@click.option('--robot_config', '-rc', required=True, help='Path to robot_config yaml file')
+@click.option('--vae_path', '-v', required=True, default='robotics-diffusion-transformer/RVQActionTokenizer', help='Path to VAE checkpoint')
+@click.option('--data_config', '-dc', required=True, default='configs/unimanual_video_data.yaml', help='Path to data_config yaml file')
+@click.option('--robot_config', '-rc', required=True, default='configs/robots/eval_unimanual_ur3_config.yaml', help='Path to robot_config yaml file')
 @click.option('--steps_per_inference', '-si', default=24, type=int, help="Action horizon for inference.")
 @click.option('--max_duration', '-md', default=2000000, help='Max duration for each epoch in seconds.')
 @click.option('--frequency', '-f', default=30, type=float, help="Control frequency in Hz.")
@@ -205,7 +205,7 @@ def main(
             os.environ["TRANSFORMERS_CACHE"] = os.path.expanduser("~/.cache/huggingface/transformers")
             
             # Cache model loading for processor and model
-            processor_path = "Qwen/Qwen2.5-VL-7B-Instruct"
+            processor_path = "robotics-diffusion-transformer/Qwen2.5-VL-7B-Instruct"
             if True or not hasattr(main, '_cached_processor') or main._cached_processor is None:
                 print("Loading processor from scratch...")
                 main._cached_processor = AutoProcessor.from_pretrained(
@@ -264,6 +264,7 @@ def main(
                 vae.pos_id_len + vae.rot_id_len + vae.grip_id_len
             )
 
+            #FIXME 修改为真实的normalizer路径
             normalizer_path = os.path.join(os.path.dirname(input), 'umi_vq_normalizer.pt')
             # Cache normalizer as well
             if not hasattr(main, '_cached_normalizer') or main._cached_normalizer is None or main._cached_normalizer_path != normalizer_path:
@@ -293,7 +294,8 @@ def main(
                 episode_start_pose.append(pose)
             with torch.no_grad():
                 obs_dict_np = get_real_umi_obs_dict(
-                    env_obs=obs, shape_meta=cfg.task.shape_meta,
+                    env_obs=obs, 
+                    shape_meta=cfg.task.shape_meta,
                     obs_pose_repr=obs_pose_rep,
                     tx_robot1_robot0=tx_robot1_robot0,
                     episode_start_pose=episode_start_pose)

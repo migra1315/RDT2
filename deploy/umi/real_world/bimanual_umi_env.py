@@ -118,8 +118,8 @@ class BimanualUmiEnv:
         robots: List[RTDEInterpolationController] = list()
         grippers = list()
         for robot_id, rc in enumerate(robots_config):
-            if rc['robot_type'].startswith('ur5'):
-                assert rc['robot_type'] in ['ur5', 'ur5e']
+            if rc['robot_type'].startswith('ur'):
+                assert rc['robot_type'] in ['ur5', 'ur5e','ur3']
                 this_robot = RTDEInterpolationController(
                     shm_manager=shm_manager,
                     robot_ip=rc['robot_ip'],
