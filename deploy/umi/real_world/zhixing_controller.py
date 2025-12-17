@@ -74,15 +74,15 @@ def get_serial_dev(serial: str):
     """
     # check all devs are /dev/ttyUSB*
     devs = os.listdir('/dev')
-    devs = [dev for dev in devs if dev.startswith('ttyUSB')]
-    dev_ids = [int(dev.split('ttyUSB')[-1]) for dev in devs]
+    devs = [dev for dev in devs if dev.startswith('ttyCH343USB')]
+    dev_ids = [int(dev.split('ttyCH343USB')[-1]) for dev in devs]
 
     for dev_id in dev_ids:
         try:
-            with ZhixingDriver(serial_dev=f"/dev/ttyUSB{dev_id}") as zx:
+            with ZhixingDriver(serial_dev=f"/dev/ttyCH343USB{dev_id}") as zx:
                 zx_serial = zx.read_serial()
             if zx_serial == serial:
-                return f"/dev/ttyUSB{dev_id}"
+                return f"/dev/ttyCH343USB{dev_id}"
         except Exception as e:
             # print(f"Error reading serial from /dev/ttyUSB{dev_id}: {e}")
             continue

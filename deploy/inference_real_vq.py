@@ -74,14 +74,14 @@ def solve_sphere_collision(ee_poses, robots_config):
 # TODO: add support for the third camera from reals
 @click.command()
 @click.option('--input', '-i', required=True, default='robotics-diffusion-transformer/RDT2-VQ',help='Path to checkpoint')
-@click.option('--output', '-o', required=True, help='Directory to save recording')
+@click.option('--output', '-o', required=True, default='output',help='Directory to save recording')
 @click.option('--vae_path', '-v', required=True, default='robotics-diffusion-transformer/RVQActionTokenizer', help='Path to VAE checkpoint')
 @click.option('--data_config', '-dc', required=True, default='configs/unimanual_video_data.yaml', help='Path to data_config yaml file')
 @click.option('--robot_config', '-rc', required=True, default='configs/robots/eval_unimanual_ur3_config.yaml', help='Path to robot_config yaml file')
 @click.option('--steps_per_inference', '-si', default=24, type=int, help="Action horizon for inference.")
 @click.option('--max_duration', '-md', default=2000000, help='Max duration for each epoch in seconds.')
 @click.option('--frequency', '-f', default=30, type=float, help="Control frequency in Hz.")
-@click.option('--instruction', type=str, default=None)
+@click.option('--instruction', type=str, default='pick up the pen')
 @click.option('--codec', type=str, default='ffv1')
 @click.option('--binarize_gripper', '-bg', is_flag=True, default=False, help="Binarize gripper action.")
 @click.option('--interact', is_flag=True, default=False, help="Interactive mode.")
@@ -154,6 +154,7 @@ def main(
     if len(robots_config) < 2:
         # del dummy keys for unimanual compatibility
         keys_to_del = [
+            "camera1_rgb",
             "robot1_eef_pos",
             "robot1_eef_rot_axis_angle",
             "robot1_gripper_width",
@@ -171,6 +172,7 @@ def main(
         cam_kwargs['input_res'] = raw_obs_res
         cam_kwargs['output_res'] = obs_res
         
+    print(cam_kwargs)
 
     with SharedMemoryManager() as shm_manager:
         # with Spacemouse(shm_manager=shm_manager) as sm, \
@@ -265,7 +267,7 @@ def main(
             )
 
             #FIXME 修改为真实的normalizer路径
-            normalizer_path = os.path.join(os.path.dirname(input), 'umi_vq_normalizer.pt')
+            normalizer_path = os.path.join(os.path.dirname(input), 'umi_normalizer_wo_downsample_indentity_rot.pt')
             # Cache normalizer as well
             if not hasattr(main, '_cached_normalizer') or main._cached_normalizer is None or main._cached_normalizer_path != normalizer_path:
                 print("Loading normalizer from scratch...")
@@ -561,6 +563,7 @@ def main(
                             this_target_poses = this_target_poses[is_new]
                             action_timestamps = action_timestamps[is_new]
                         
+                        print(this_target_poses)
                         # execute actions
                         env.exec_actions(
                             actions=this_target_poses,

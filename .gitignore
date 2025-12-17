@@ -26,4 +26,6 @@ hostfile*.txt
 .deepspeed_env
 .vscode
 robotics-diffusion-transformer/*
-
+assets/MvCamCtrlSDK_STD_V4.7.0_251113
+assets/MVS_Linux_STD_V4.6.1_251113
+output/
